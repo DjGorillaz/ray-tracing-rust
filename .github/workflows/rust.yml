@@ -18,16 +18,16 @@ jobs:
       run: cargo build --verbose
     - name: Run tests
       run: cargo test --verbose
+    - name: Make directory
+      run: mkdir -p result
+    - name: Create image
+      run: cargo run --release > result/img.ppm
    
 
   upload-image:
     runs-on: ubuntu-latest
     needs: build
     steps:
-    - name: Make directory
-      run: mkdir -p result
-    - name: Create image
-      run: cargo run --release > result/img.ppm
     - uses: actions/checkout@master
       with:
         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
