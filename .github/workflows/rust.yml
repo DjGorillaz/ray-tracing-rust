@@ -11,18 +11,37 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Build
       run: cargo build --verbose
     - name: Run tests
       run: cargo test --verbose
+   
+
+  upload image:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Make directory
+      run: mkdir -p result
     - name: Create image
-      run: cargo run --release > img.ppm
-    - uses: actions/upload-artifact@v2
+      run: cargo run --release > result/img.ppm
+    - uses: actions/checkout@master
       with:
-        name: img.ppm
-        path: img.ppm
+        persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
+        fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+    - name: Create local changes
+      run: |
+        git add result/image.ppm
+    - name: Commit files
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git commit -m "Upload result image" -a
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
