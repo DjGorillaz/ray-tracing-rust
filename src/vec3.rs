@@ -98,6 +98,7 @@ fn sub_test() {
 fn mul_test() {
     let v1 = Vec3::new(1.5, 2.0, 3.0);
     assert_eq!(v1 * 2.0, Vec3::new(3.0, 4.0, 6.0));
+    assert_eq!(2.0 * v1, Vec3::new(3.0, 4.0, 6.0));
 }
 
 #[test]
