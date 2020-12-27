@@ -24,7 +24,7 @@ jobs:
     - name: Make directory
       run: mkdir -p result
     - name: Create image
-      run: cargo run --release > result/img.ppm
+      run: cargo run --release > result/image.ppm
     - name: Add image
       run: git add result/image.ppm
     - name: Commit files
