@@ -14,6 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
+        fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
     - name: Build
       run: cargo build --verbose
     - name: Run tests
@@ -22,19 +25,8 @@ jobs:
       run: mkdir -p result
     - name: Create image
       run: cargo run --release > result/img.ppm
-   
-
-  upload-image:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-    - uses: actions/checkout@master
-      with:
-        persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
-        fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
-    - name: Create local changes
-      run: |
-        git add result/image.ppm
+    - name: Add image
+      run: git add result/image.ppm
     - name: Commit files
       run: |
         git config --local user.email "action@github.com"
