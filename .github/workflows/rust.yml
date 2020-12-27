@@ -20,7 +20,7 @@ jobs:
       run: cargo test --verbose
    
 
-  upload image:
+  upload-image:
     runs-on: ubuntu-latest
     needs: build
     steps:
