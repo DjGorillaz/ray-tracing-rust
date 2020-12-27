@@ -2,22 +2,19 @@ extern crate image;
 use std::env;
 use std::process;
 
-fn _write_ppm(width: usize, height: usize) {
-    println!("P3\n{} {}\n{}", width, height, 255);
+mod vec3;
+use vec3::Vec3;
 
-    for i in (0..height).rev() {
-        for j in 0..width {
-            let r = j as f32 / (width - 1) as f32;
-            let g = i as f32 / (height - 1) as f32;
-            let b = 0.25;
+fn create_pixel(color: &Vec3) -> image::Rgb<u8> {
+    let pixel = image::Rgb(
+        [
+            (255.999 * color.x) as u8,
+            (255.999 * color.y) as u8,
+            (255.999 * color.z) as u8
+        ]
+    );
 
-            let ir = 255.999 * r;
-            let ig = 255.99 * g;
-            let ib = 255.99 * b;
-
-            println!("{} {} {}", ir as i32, ig as i32 , ib as i32);
-        }
-    }
+    pixel
 }
 
 fn create_image(width: usize, height: usize) -> image::RgbImage {
@@ -25,17 +22,14 @@ fn create_image(width: usize, height: usize) -> image::RgbImage {
 
     for i in 0..height {
         for j in 0..width {
-            let r = j as f32 / (width - 1) as f32;
-            let g = (height - i) as f32 / (height - 1) as f32;
-            let b = 0.25;
+            let color = Vec3::new(
+                j as f64 / (width - 1) as f64,
+                (height - i) as f64 / (height - 1) as f64,
+                0.25
+            );
 
-            let ir = 255.999 * r;
-            let ig = 255.999 * g;
-            let ib = 255.999 * b;
-
-            image.get_pixel_mut(j as u32, i as u32).0 = [ir as u8,
-                                                         ig as u8,
-                                                         ib as u8];
+            let pixel = create_pixel(&color);
+            image.put_pixel(j as u32, i as u32, pixel);
         }
     }
 
