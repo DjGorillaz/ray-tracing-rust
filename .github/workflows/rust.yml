@@ -25,12 +25,11 @@ jobs:
       run: mkdir -p result
     - name: Create image
       run: cargo run --release result/image.png
-    - name: Add image
-      run: git add result/image.png
     - name: Commit files
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
+        git add result/image.png
         git commit -m "Upload result image" -a
     - name: Push changes
       uses: ad-m/github-push-action@master
